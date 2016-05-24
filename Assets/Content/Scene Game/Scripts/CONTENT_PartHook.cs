@@ -5,12 +5,12 @@ using UnityEngine.Networking;
 public class CONTENT_PartHook : Part 
 {
 //    public CONTENT_Microbe microbe;
-    public GameObject template;
+//    public GameObject template;
     public float ShootSpeed = 10f;
 
     public void Use(NetworkInstanceId netId, Vector2 position, Vector2 direction)
     {
-        var f = Instantiate(template);
+        var f = Instantiate((GameObject)Resources.Load("Microbe Hook"));
         f.transform.position = position;
         f.GetComponent<Rigidbody2D>().rotation = direction.ToAngle();
         f.GetComponent<Rigidbody2D>().velocity = direction.normalized * ShootSpeed;
