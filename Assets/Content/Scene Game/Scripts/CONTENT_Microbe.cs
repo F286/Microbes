@@ -9,28 +9,37 @@ public class CONTENT_Microbe : NetworkBehaviour
     [Command]
     public void CmdHook(NetworkInstanceId netId, Vector2 position, Vector2 direction, float shootSpeed)
     {
+//        RpcHook(netId, position, direction, shootSpeed);
+
         var g = Instantiate((GameObject)Resources.Load("Microbe Hook"));
-        g.transform.position = position + direction.normalized;
+        g.transform.position = position;// + direction.normalized;
         g.GetComponent<Rigidbody2D>().rotation = direction.ToAngle();
         g.GetComponent<Rigidbody2D>().velocity = direction.normalized * shootSpeed;
 
+        NetworkServer.Spawn(g);
+//        NetworkServer.SpawnWithClientAuthority(g, NetworkServer.FindLocalObject(netId));
+
+        RpcHook(g, netId, direction);
+    }
+    [ClientRpc]
+    public void RpcHook(GameObject g, NetworkInstanceId netId, Vector2 direction)
+    {
         if (direction.x < 0)
         {
             g.GetComponent<SpriteRenderer>().flipY = true;
         }
 
 //        print(netId);
-//        foreach (var item in GameObject.FindGameObjectsWithTag("microbe"))
-//        {
-//            if (item.GetComponent<CONTENT_Microbe>().netId == netId)
-//            {
-//                foreach (var p in item.GetComponent<CONTENT_Microbe>().bodies)
-//                {
-//                    Physics2D.IgnoreCollision(g.GetComponent<Collider2D>(), p.GetComponent<Collider2D>());
-//                }                    
-//            }
-//        }
-        NetworkServer.Spawn(g);
+        foreach (var item in GameObject.FindGameObjectsWithTag("microbe"))
+        {
+            if (item.GetComponent<CONTENT_Microbe>().netId == netId)
+            {
+                foreach (var p in item.GetComponent<CONTENT_Microbe>().bodies)
+                {
+                    Physics2D.IgnoreCollision(g.GetComponent<Collider2D>(), p.GetComponent<Collider2D>());
+                }                    
+            }
+        }
     }
 
 
