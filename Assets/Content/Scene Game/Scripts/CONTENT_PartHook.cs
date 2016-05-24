@@ -1,13 +1,14 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.Networking;
 
-public class CONTENT_PartHook : MonoBehaviour 
+public class CONTENT_PartHook : Part 
 {
-    public CONTENT_Microbe microbe;
+//    public CONTENT_Microbe microbe;
     public GameObject template;
     public float ShootSpeed = 1f;
 
-    public void Use(byte guid, Vector2 position, Vector2 direction)
+    public void Use(NetworkInstanceId netId, Vector2 position, Vector2 direction)
     {
         var f = Instantiate(template);
         f.transform.position = position;
@@ -21,7 +22,7 @@ public class CONTENT_PartHook : MonoBehaviour
 
         foreach (var item in GameObject.FindGameObjectsWithTag("microbe"))
         {
-            if (item.GetComponent<CONTENT_Microbe>().guid == guid)
+            if (item.GetComponent<CONTENT_Microbe>().netId == netId)
             {
                 foreach (var p in item.GetComponent<CONTENT_Microbe>().pieces) 
                 {
@@ -31,12 +32,12 @@ public class CONTENT_PartHook : MonoBehaviour
         }
     }
 
-    public void Update()
+    public override void NetworkUpdate()
     {
         if(Input.GetMouseButtonDown(0))
         {
             var d = (Vector2)Input.mousePosition - (Vector2)Camera.main.WorldToScreenPoint(transform.position);
-            Use(microbe.guid, transform.position, d);
+            Use(id, transform.position, d);
         }
     }
 }

@@ -1,13 +1,16 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.Networking;
 
-public class CONTENT_Microbe : MonoBehaviour 
+public class CONTENT_Microbe : NetworkBehaviour 
 {
     public List<Rigidbody2D> pieces;
+    public List<Part> parts;
     public float repelDistance = 0.5f;
     public float repelForce = 1f;
     public byte guid;
+    public Transform cameraFollow;
 
     public Vector2 forward
     {
@@ -45,13 +48,23 @@ public class CONTENT_Microbe : MonoBehaviour
         }
     }
 
-	// Use this for initialization
-	void Start () {
-	
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
+    public void Update()
+    {
+        var p = Vector2.zero;
+        foreach (var item in pieces) 
+        {
+            p += item.position;
+        }
+        p /= pieces.Count;
+        cameraFollow.position = p;
+
+        if (isLocalPlayer)
+        {
+            foreach (var item in parts)
+            {
+                item.NetworkUpdate();
+            }
+        }
+    }
+
 }

@@ -1,9 +1,9 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class CONTENT_PartGlide : MonoBehaviour 
+public class CONTENT_PartGlide : Part 
 {
-    public CONTENT_Microbe microbe;
+//    public CONTENT_Microbe microbe;
     public float force = 1;
 
     public void Use(Vector2 forward)
@@ -14,7 +14,7 @@ public class CONTENT_PartGlide : MonoBehaviour
         }
     }
 
-	public void Update () 
+    public override void NetworkUpdate () 
     {
         if (Input.GetKey("d"))
         {

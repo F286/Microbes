@@ -6,7 +6,7 @@
     <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <RootNamespace></RootNamespace>
-    <ProjectGuid>{F113282B-8E86-DA30-0830-F57ACABAE0F9}</ProjectGuid>
+    <ProjectGuid>{46BD7207-A6A0-8550-5172-6270810F4F14}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <AssemblyName>Assembly-CSharp-firstpass</AssemblyName>
@@ -46,6 +46,7 @@
   </ItemGroup>
   <ItemGroup>
      <Compile Include="Assets\Standard Assets\Content\Setup\Scripts\CONTENT_Camera.cs" />
+     <Compile Include="Assets\Standard Assets\Content\Setup\Scripts\CONTENT_CameraFollow.cs" />
      <Compile Include="Assets\Standard Assets\Content\Setup\Scripts\CONTENT_Gesture.cs" />
      <Compile Include="Assets\Standard Assets\Content\Setup\Scripts\CONTENT_Player.cs" />
      <Compile Include="Assets\Standard Assets\Content\Setup\Scripts\DATA_Setup.cs" />
