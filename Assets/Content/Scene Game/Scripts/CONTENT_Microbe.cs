@@ -16,6 +16,9 @@ public class CONTENT_Microbe : NetworkBehaviour
         g.GetComponent<Rigidbody2D>().rotation = direction.ToAngle();
         g.GetComponent<Rigidbody2D>().velocity = direction.normalized * shootSpeed;
 
+        g.GetComponent<CONTENT_Hook>().microbe = NetworkServer.FindLocalObject(netId).GetComponent<CONTENT_Microbe>();
+        //g.GetComponent<CONTENT_Microbe>()
+
         NetworkServer.Spawn(g);
 //        NetworkServer.SpawnWithClientAuthority(g, NetworkServer.FindLocalObject(netId));
 

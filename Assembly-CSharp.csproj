@@ -45,8 +45,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-     <Compile Include="Assets\Content\Scene Game\Art\CONTENT_Hook.cs" />
      <Compile Include="Assets\Content\Scene Game\Scripts\CONTENT_Driller.cs" />
+     <Compile Include="Assets\Content\Scene Game\Scripts\CONTENT_Hook.cs" />
      <Compile Include="Assets\Content\Scene Game\Scripts\CONTENT_Microbe.cs" />
      <Compile Include="Assets\Content\Scene Game\Scripts\CONTENT_PartGlide.cs" />
      <Compile Include="Assets\Content\Scene Game\Scripts\CONTENT_PartHook.cs" />
