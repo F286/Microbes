@@ -4,11 +4,11 @@ using System.Collections;
 public class CONTENT_PartGlide : Part 
 {
 //    public CONTENT_Microbe microbe;
-    public float force = 1;
+    public float force = 6.2f;
 
     public void Use(Vector2 forward)
     {
-        foreach (var item in microbe.pieces)
+        foreach (var item in microbe.bodies)
         {
             item.AddForce(forward * Time.fixedDeltaTime * force, ForceMode2D.Impulse);
         }

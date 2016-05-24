@@ -6,7 +6,7 @@ public class CONTENT_PartHook : Part
 {
 //    public CONTENT_Microbe microbe;
     public GameObject template;
-    public float ShootSpeed = 1f;
+    public float ShootSpeed = 10f;
 
     public void Use(NetworkInstanceId netId, Vector2 position, Vector2 direction)
     {
@@ -24,7 +24,7 @@ public class CONTENT_PartHook : Part
         {
             if (item.GetComponent<CONTENT_Microbe>().netId == netId)
             {
-                foreach (var p in item.GetComponent<CONTENT_Microbe>().pieces) 
+                foreach (var p in item.GetComponent<CONTENT_Microbe>().bodies) 
                 {
                     Physics2D.IgnoreCollision(f.GetComponent<Collider2D>(), p.GetComponent<Collider2D>());
                 }                    

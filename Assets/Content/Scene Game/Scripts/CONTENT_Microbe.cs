@@ -5,11 +5,22 @@ using UnityEngine.Networking;
 
 public class CONTENT_Microbe : NetworkBehaviour 
 {
-    public List<Rigidbody2D> pieces;
-    public List<Part> parts;
-    public float repelDistance = 0.5f;
-    public float repelForce = 1f;
-    public byte guid;
+    public Rigidbody2D[] bodies
+    {
+        get
+        {
+            return gameObject.GetComponentsInChildren<Rigidbody2D>();
+        }
+    }
+    public Part[] parts
+    {
+        get
+        {
+            return gameObject.GetComponentsInChildren<Part>();
+        }
+    }
+    public float repelDistance = 4.73f;
+    public float repelForce = -0.3f;
     public Transform cameraFollow;
 
     public Vector2 forward
@@ -17,31 +28,75 @@ public class CONTENT_Microbe : NetworkBehaviour
         get
         {
             var r = Vector2.zero;
-            for (int i = 1; i < pieces.Count; i++)
+            for (int i = 1; i < bodies.Length; i++)
             {
-                r += pieces[i].position - pieces[i - 1].position;
+                r += bodies[i].position - bodies[i - 1].position;
             }
-            r /= pieces.Count - 1;
+            r /= bodies.Length - 1;
             return r;
         }
+    }
+    public void Start()
+    {
+//        if (isLocalPlayer)
+//        {
+//            GameObject prev = null;
+//            for (int i = 0; i < 4; i++)
+//            {
+//                var r = (GameObject)Resources.Load("Microbe Circle");
+//                GameObject g = (GameObject)Instantiate(r, transform.position + new Vector3(i * 0.5f, 0), transform.rotation);
+//                g.transform.parent = transform;
+//
+//                if (prev == null)
+//                {
+//                    GameObject.Destroy(g.GetComponent<SpringJoint2D>());
+//                }
+//                else
+//                {
+//                    g.GetComponent<SpringJoint2D>().connectedBody = prev.GetComponent<Rigidbody2D>();
+//                }
+//                prev = g;
+//
+//                if (i == 1)
+//                {
+//                    g.AddComponent<CONTENT_PartGlide>();
+//                }
+//
+////            NetworkServer.Spawn(g);
+//            }
+//        }
+//        var network = GetComponents<NetworkTransformChild>();
+//        for (int i = 0; i < network.Length; i++)
+//        {
+////            print(i);
+//            if (i < network.Length && i < bodies.Length)
+//            {
+//                network[i].target = bodies[i].transform;
+//            }
+//        }
+//        foreach (var item in Network)
+//        {
+//            item.target = 
+//        }
+//        GetComponent<NetworkTransformChild>().target = bodies[0].transform;
     }
 
 
     public void FixedUpdate()
     {
-        for (int i = 0; i < pieces.Count; i++)
+        for (int i = 0; i < bodies.Length; i++)
         {
-            for (int j = 0; j < pieces.Count; j++) 
+            for (int j = 0; j < bodies.Length; j++) 
             {
                 if (i != j)
                 {
-                    var d = pieces[j].position - pieces[i].position;
+                    var d = bodies[j].position - bodies[i].position;
                     var m = d.magnitude;
                     if (m < repelDistance)
                     {
                         d = d.normalized * (repelDistance - m);
-                        pieces[i].AddForce(d * repelForce * Time.fixedDeltaTime, ForceMode2D.Impulse);
-                        pieces[j].AddForce(-d * repelForce * Time.fixedDeltaTime, ForceMode2D.Impulse);
+                        bodies[i].AddForce(d * repelForce * Time.fixedDeltaTime, ForceMode2D.Impulse);
+                        bodies[j].AddForce(-d * repelForce * Time.fixedDeltaTime, ForceMode2D.Impulse);
                     }
                 }
             }
@@ -50,14 +105,16 @@ public class CONTENT_Microbe : NetworkBehaviour
 
     public void Update()
     {
-        var p = Vector2.zero;
-        foreach (var item in pieces) 
+        if (bodies.Length > 0)
         {
-            p += item.position;
+            var p = Vector2.zero;
+            foreach (var item in bodies)
+            {
+                p += item.position;
+            }
+            p /= bodies.Length;
+            cameraFollow.position = p;
         }
-        p /= pieces.Count;
-        cameraFollow.position = p;
-
         if (isLocalPlayer)
         {
             foreach (var item in parts)
