@@ -6,44 +6,61 @@ using UnityEngine.Networking;
 public class CONTENT_Microbe : NetworkBehaviour 
 {
     
+//    public void Hook(NetworkInstanceId netId, GameObject microbe, Vector2 position, Vector2 direction, float shootSpeed)
     [Command]
     public void CmdHook(NetworkInstanceId netId, Vector2 position, Vector2 direction, float shootSpeed)
     {
+        
 //        RpcHook(netId, position, direction, shootSpeed);
 
         var g = Instantiate((GameObject)Resources.Load("Microbe Hook"));
         g.transform.position = position;// + direction.normalized;
-        g.GetComponent<Rigidbody2D>().rotation = direction.ToAngle();
-        g.GetComponent<Rigidbody2D>().velocity = direction.normalized * shootSpeed;
+//        g.GetComponent<Rigidbody2D>().rotation = direction.ToAngle();
+        g.transform.rotation = Quaternion.Euler(0, 0, direction.ToAngle());
+//        g.GetComponent<Rigidbody2D>().velocity = direction.normalized * shootSpeed;
 
-        g.GetComponent<CONTENT_Hook>().microbe = NetworkServer.FindLocalObject(netId).GetComponent<CONTENT_Microbe>();
-        //g.GetComponent<CONTENT_Microbe>()
+        g.GetComponent<CONTENT_Hook>().initialVelocity = g.transform.right;
 
-        NetworkServer.Spawn(g);
-//        NetworkServer.SpawnWithClientAuthority(g, NetworkServer.FindLocalObject(netId));
+//        g.GetComponent<CONTENT_Hook>().microbeId = netId;
 
-        RpcHook(g, netId, direction);
+//        print(microbe);
+//        g.GetComponent<CONTENT_Hook>().microbe = microbe;
+//        g.GetComponent<CONTENT_Hook>().microbe2 = microbe;
+//        print(microbe);
+
+//        NetworkServer.Spawn(g);
+        NetworkServer.SpawnWithClientAuthority(g, NetworkServer.FindLocalObject(netId));
+
+//        RpcHook(g, netId, direction);
     }
-    [ClientRpc]
-    public void RpcHook(GameObject g, NetworkInstanceId netId, Vector2 direction)
-    {
-        if (direction.x < 0)
-        {
-            g.GetComponent<SpriteRenderer>().flipY = true;
-        }
-
-//        print(netId);
-        foreach (var item in GameObject.FindGameObjectsWithTag("microbe"))
-        {
-            if (item.GetComponent<CONTENT_Microbe>().netId == netId)
-            {
-                foreach (var p in item.GetComponent<CONTENT_Microbe>().bodies)
-                {
-                    Physics2D.IgnoreCollision(g.GetComponent<Collider2D>(), p.GetComponent<Collider2D>());
-                }                    
-            }
-        }
-    }
+//    [ClientRpc]
+//    public void RpcHook(GameObject g, NetworkInstanceId netId, Vector2 direction)
+//    {
+////        print(NetworkServer.FindLocalObject(netId));
+//////        print(microbe);
+////        print(netId);
+////        print(direction);
+////        print(g);
+////        g.GetComponent<CONTENT_Hook>().microbe = microbe.GetComponent<CONTENT_Microbe>();
+////        g.GetComponent<CONTENT_Hook>().microbe = NetworkServer.FindLocalObject(netId).GetComponent<CONTENT_Microbe>();
+//
+//        if (direction.x < 0)
+//        {
+//            g.GetComponent<SpriteRenderer>().flipY = true;
+//        }
+//
+////        print(netId);
+//        foreach (var item in GameObject.FindGameObjectsWithTag("microbe"))
+//        {
+//            if (item.GetComponent<CONTENT_Microbe>().netId == netId)
+//            {
+//                foreach (var p in item.GetComponent<CONTENT_Microbe>().bodies)
+//                {
+//                    Physics2D.IgnoreCollision(g.GetComponent<Collider2D>(), p.GetComponent<Collider2D>());
+//                }                    
+//            }
+//        }
+//    }
 
 
     public Rigidbody2D[] bodies
@@ -79,6 +96,16 @@ public class CONTENT_Microbe : NetworkBehaviour
     }
     public void Start()
     {
+        if (!isLocalPlayer)
+        {
+            foreach (var item in bodies)
+            {
+                item.gravityScale = 0;
+                item.drag = 7.86f;
+                item.angularDrag = 5;
+//                item.isKinematic = true;
+            }
+        }
 //        if (isLocalPlayer)
 //        {
 //            GameObject prev = null;

@@ -11,7 +11,7 @@ public class CONTENT_Gesture : MonoBehaviour
 
             if (overlap)
             {
-                print(overlap);
+//                print(overlap);
             }
         }
 	}
