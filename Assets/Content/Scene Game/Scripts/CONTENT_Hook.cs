@@ -9,7 +9,7 @@ public class CONTENT_Hook : NetworkBehaviour
 //    [SyncVar]
 //    public NetworkInstanceId microbeId;
 //    [SyncVar]
-//    public GameObject microbe;
+    public Transform attach;
 //    public GameObject microbe2;
     public ParticleSystem particles;
     public float rotateForce = 1;
@@ -51,13 +51,30 @@ public class CONTENT_Hook : NetworkBehaviour
 
 //        print(initialVelocity);
 
-        GetComponent<Rigidbody2D>().velocity = initialVelocity * 13;
+        GetComponent<Rigidbody2D>().velocity = initialVelocity * 17;
 
         var direction = transform.right;
 
         if (direction.x < 0)
         {
             GetComponent<SpriteRenderer>().flipY = true;
+        }
+
+        CONTENT_Microbe find = null;
+        var distance = float.PositiveInfinity;
+        foreach (var item in GameObject.FindGameObjectsWithTag("microbe"))
+        {
+            var d = item.GetComponent<CONTENT_Microbe>().cameraFollow.position - transform.position;
+            var m = d.sqrMagnitude;
+            if(m < distance)
+            {
+                distance = m;
+                find = item.GetComponent<CONTENT_Microbe>();
+            }
+        }
+        if (find)
+        {
+            attach = find.gameObject.GetComponentInChildren<CONTENT_PartHook>().transform;
         }
 //        if (n)
 //        {
@@ -87,18 +104,18 @@ public class CONTENT_Hook : NetworkBehaviour
 
     public void Update()
     {
-//        if (microbe != null)
-//        {
-//            var s = microbe.transform.position;
-//            var e = transform.position;
-//
-//            particles.GetParticles(p);
-//            for (int i = 0; i < 100; i++)
-//            {
-//                p[i].position = Vector3.Lerp(s, e, i / 100f);
-//            }
-//            particles.SetParticles(p, 100);
-//        }
+        if (attach != null)
+        {
+            var s = attach.position;
+            var e = transform.position;
+
+            particles.GetParticles(p);
+            for (int i = 0; i < 100; i++)
+            {
+                p[i].position = Vector3.Lerp(s, e, i / 100f);
+            }
+            particles.SetParticles(p, 100);
+        }
     }
 
     void OnCollisionEnter2D(Collision2D coll) 

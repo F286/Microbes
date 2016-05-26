@@ -8,7 +8,7 @@ public class CONTENT_Microbe : NetworkBehaviour
     
 //    public void Hook(NetworkInstanceId netId, GameObject microbe, Vector2 position, Vector2 direction, float shootSpeed)
     [Command]
-    public void CmdHook(NetworkInstanceId netId, Vector2 position, Vector2 direction, float shootSpeed)
+    public void CmdHook(NetworkInstanceId netId, Vector2 position, float angle)
     {
         
 //        RpcHook(netId, position, direction, shootSpeed);
@@ -16,7 +16,7 @@ public class CONTENT_Microbe : NetworkBehaviour
         var g = Instantiate((GameObject)Resources.Load("Microbe Hook"));
         g.transform.position = position;// + direction.normalized;
 //        g.GetComponent<Rigidbody2D>().rotation = direction.ToAngle();
-        g.transform.rotation = Quaternion.Euler(0, 0, direction.ToAngle());
+        g.transform.rotation = Quaternion.Euler(0, 0, angle);
 //        g.GetComponent<Rigidbody2D>().velocity = direction.normalized * shootSpeed;
 
         g.GetComponent<CONTENT_Hook>().initialVelocity = g.transform.right;
