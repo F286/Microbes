@@ -5,63 +5,18 @@ using UnityEngine.Networking;
 
 public class CONTENT_Microbe : NetworkBehaviour 
 {
-    
-//    public void Hook(NetworkInstanceId netId, GameObject microbe, Vector2 position, Vector2 direction, float shootSpeed)
     [Command]
     public void CmdHook(NetworkInstanceId netId, Vector2 position, float angle)
     {
-        
-//        RpcHook(netId, position, direction, shootSpeed);
-
         var g = Instantiate((GameObject)Resources.Load("Microbe Hook"));
-        g.transform.position = position;// + direction.normalized;
-//        g.GetComponent<Rigidbody2D>().rotation = direction.ToAngle();
+        g.transform.position = position;
         g.transform.rotation = Quaternion.Euler(0, 0, angle);
-//        g.GetComponent<Rigidbody2D>().velocity = direction.normalized * shootSpeed;
 
         g.GetComponent<CONTENT_Hook>().initialVelocity = g.transform.right;
+        g.GetComponent<CONTENT_Hook>().microbeNetId = netId;
 
-//        g.GetComponent<CONTENT_Hook>().microbeId = netId;
-
-//        print(microbe);
-//        g.GetComponent<CONTENT_Hook>().microbe = microbe;
-//        g.GetComponent<CONTENT_Hook>().microbe2 = microbe;
-//        print(microbe);
-
-//        NetworkServer.Spawn(g);
         NetworkServer.SpawnWithClientAuthority(g, NetworkServer.FindLocalObject(netId));
-
-//        RpcHook(g, netId, direction);
     }
-//    [ClientRpc]
-//    public void RpcHook(GameObject g, NetworkInstanceId netId, Vector2 direction)
-//    {
-////        print(NetworkServer.FindLocalObject(netId));
-//////        print(microbe);
-////        print(netId);
-////        print(direction);
-////        print(g);
-////        g.GetComponent<CONTENT_Hook>().microbe = microbe.GetComponent<CONTENT_Microbe>();
-////        g.GetComponent<CONTENT_Hook>().microbe = NetworkServer.FindLocalObject(netId).GetComponent<CONTENT_Microbe>();
-//
-//        if (direction.x < 0)
-//        {
-//            g.GetComponent<SpriteRenderer>().flipY = true;
-//        }
-//
-////        print(netId);
-//        foreach (var item in GameObject.FindGameObjectsWithTag("microbe"))
-//        {
-//            if (item.GetComponent<CONTENT_Microbe>().netId == netId)
-//            {
-//                foreach (var p in item.GetComponent<CONTENT_Microbe>().bodies)
-//                {
-//                    Physics2D.IgnoreCollision(g.GetComponent<Collider2D>(), p.GetComponent<Collider2D>());
-//                }                    
-//            }
-//        }
-//    }
-
 
     public Rigidbody2D[] bodies
     {
@@ -103,52 +58,9 @@ public class CONTENT_Microbe : NetworkBehaviour
                 item.gravityScale = 0;
                 item.drag = 7.86f;
                 item.angularDrag = 5;
-//                item.isKinematic = true;
             }
         }
-//        if (isLocalPlayer)
-//        {
-//            GameObject prev = null;
-//            for (int i = 0; i < 4; i++)
-//            {
-//                var r = (GameObject)Resources.Load("Microbe Circle");
-//                GameObject g = (GameObject)Instantiate(r, transform.position + new Vector3(i * 0.5f, 0), transform.rotation);
-//                g.transform.parent = transform;
-//
-//                if (prev == null)
-//                {
-//                    GameObject.Destroy(g.GetComponent<SpringJoint2D>());
-//                }
-//                else
-//                {
-//                    g.GetComponent<SpringJoint2D>().connectedBody = prev.GetComponent<Rigidbody2D>();
-//                }
-//                prev = g;
-//
-//                if (i == 1)
-//                {
-//                    g.AddComponent<CONTENT_PartGlide>();
-//                }
-//
-////            NetworkServer.Spawn(g);
-//            }
-//        }
-//        var network = GetComponents<NetworkTransformChild>();
-//        for (int i = 0; i < network.Length; i++)
-//        {
-////            print(i);
-//            if (i < network.Length && i < bodies.Length)
-//            {
-//                network[i].target = bodies[i].transform;
-//            }
-//        }
-//        foreach (var item in Network)
-//        {
-//            item.target = 
-//        }
-//        GetComponent<NetworkTransformChild>().target = bodies[0].transform;
     }
-
 
     public void FixedUpdate()
     {

@@ -6,50 +6,18 @@ public class CONTENT_Hook : NetworkBehaviour
 {
     [SyncVar]
     public Vector2 initialVelocity;
-//    [SyncVar]
-//    public NetworkInstanceId microbeId;
-//    [SyncVar]
-    public Transform attach;
-//    public GameObject microbe2;
+    [SyncVar]
+    public NetworkInstanceId microbeNetId;
+
+    public Rigidbody2D attach;
     public ParticleSystem particles;
     public float rotateForce = 1;
 
     ParticleSystem.Particle[] p = new ParticleSystem.Particle[100];
 
-//    public void Awake()
-//    {
-//        print(Time.frameCount);
-//    }
-
-//    override ons
-
-//    override 
-
     public override void OnStartClient()
     { 
         base.OnStartClient();
-
-//        NetworkIdentity n = null;
-//        foreach (var item in GameObject.FindObjectsOfType<NetworkIdentity>())
-//        {
-//            if (item.netId == microbeId)
-//            {
-//                n = item;
-//                break;
-//            }
-//        }
-//        print(n);
-
-
-//        print(Time.frameCount);
-
-//        print(microbeId);
-//        print(NetworkServer.FindLocalObject(microbeId));
-
-//        print(transform.position);
-//        print(transform.right);
-
-//        print(initialVelocity);
 
         GetComponent<Rigidbody2D>().velocity = initialVelocity * 17;
 
@@ -74,25 +42,9 @@ public class CONTENT_Hook : NetworkBehaviour
         }
         if (find)
         {
-            attach = find.gameObject.GetComponentInChildren<CONTENT_PartHook>().transform;
+            var part = find.gameObject.GetComponentInChildren<CONTENT_PartHook>();
+            attach = part.GetComponent<Rigidbody2D>();
         }
-//        if (n)
-//        {
-//            foreach (var body in n.GetComponent<CONTENT_Microbe>().bodies)
-//            {
-//                Physics2D.IgnoreCollision(GetComponent<Collider2D>(), body.GetComponent<Collider2D>());
-//            }  
-//        }
-//        foreach (var item in GameObject.FindGameObjectsWithTag("microbe"))
-//        {
-//            if (item.GetComponent<CONTENT_Microbe>().netId == microbeId)
-//            {
-//                foreach (var body in item.GetComponent<CONTENT_Microbe>().bodies)
-//                {
-//                    Physics2D.IgnoreCollision(GetComponent<Collider2D>(), body.GetComponent<Collider2D>());
-//                }                    
-//            }
-//        }
     }
 
     public void FixedUpdate()
@@ -100,6 +52,12 @@ public class CONTENT_Hook : NetworkBehaviour
         var r = GetComponent<Rigidbody2D>();
         r.AddTorque(Mathf.DeltaAngle(r.rotation, r.velocity.ToAngle()) * rotateForce * Time.fixedDeltaTime, 
             ForceMode2D.Impulse);
+
+        if (attach)
+        {
+            var diff = r.position - attach.position;
+            attach.AddForce(diff * Time.fixedDeltaTime * 120);
+        }
     }
 
     public void Update()

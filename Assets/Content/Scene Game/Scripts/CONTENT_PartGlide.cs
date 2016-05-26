@@ -3,7 +3,6 @@ using System.Collections;
 
 public class CONTENT_PartGlide : Part 
 {
-//    public CONTENT_Microbe microbe;
     public float force = 6.2f;
 
     public void Use(Vector2 forward)
@@ -19,12 +18,10 @@ public class CONTENT_PartGlide : Part
         if (Input.GetKey("d"))
         {
             Use(Vector2.right);
-//            Use(microbe.forward);
         }
         if (Input.GetKey("a"))
         {
             Use(Vector2.left);
-//            Use(microbe.forward * -1);
         }
 	}
 }
