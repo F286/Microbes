@@ -18,6 +18,12 @@ public class CONTENT_Microbe : NetworkBehaviour
         NetworkServer.SpawnWithClientAuthority(g, NetworkServer.FindLocalObject(netId));
     }
 
+    [Command]
+    public void CmdDestroy(GameObject g)
+    {
+        Destroy(g);
+    }
+
     public Rigidbody2D[] bodies
     {
         get
