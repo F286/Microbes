@@ -86,6 +86,7 @@ public class CONTENT_Hook : NetworkBehaviour
 
     void OnCollisionEnter2D(Collision2D coll) 
     {
+        print(this.hasAuthority);
         if (this.hasAuthority)
         {
             CmdSetKinematic();
@@ -107,7 +108,9 @@ public class CONTENT_Hook : NetworkBehaviour
                     }
                     if (hit)
                     {
-                        microbe.CmdAddHealth(-10);
+//                        p.health -= 5;
+                        CmdDamage(p.netId, -5);
+//                        p.CmdAddHealth(-10);
                         CmdDestroy();
 
 //                        microbe.health -= 10;
@@ -120,6 +123,11 @@ public class CONTENT_Hook : NetworkBehaviour
             }
         }
 
+    }
+    [Command]
+    public void CmdDamage(NetworkInstanceId netId, float add)
+    {
+        NetworkServer.FindLocalObject(netId).GetComponent<CONTENT_Microbe>().health += add;
     }
     [Command]
     public void CmdDestroy()

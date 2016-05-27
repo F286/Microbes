@@ -7,11 +7,11 @@ public class CONTENT_Microbe : NetworkBehaviour
 {
     [SyncVar]
     public float health = 100;
-    [Command]
-    public void CmdAddHealth(float add)
-    {
-        health += add;
-    }
+//    [Command]
+//    public void CmdAddHealth(float add)
+//    {
+//        health += add;
+//    }
 //    [Command]
 //    public void CmdDestroyPart(int index)
 //    {
