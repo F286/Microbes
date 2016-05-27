@@ -6,12 +6,13 @@ using System.Collections.Generic;
 public class CONTENT_PartHook : Part 
 {
     float lastShoot = -100;
+//    float lastFire = -100;
     List<GameObject> shotHooks;
     bool haveShot = false;
 
     public override void NetworkUpdate()
     {
-        if (lastShoot + 0.21f < Time.time && Input.GetMouseButtonDown(0))
+        if (lastShoot < Time.time && Input.GetMouseButtonDown(0))
         {
             lastShoot = Time.time;
             if (haveShot)
@@ -21,10 +22,13 @@ public class CONTENT_PartHook : Part
                 StartCoroutine(Fire(a - 100 * Mathf.Sign(d.x) * Mathf.Deg2Rad, 0.0f));
                 StartCoroutine(Fire(a + 000 * Mathf.Sign(d.x) * Mathf.Deg2Rad, 0.1f));
                 StartCoroutine(Fire(a + 100 * Mathf.Sign(d.x) * Mathf.Deg2Rad, 0.2f));
+
+                lastShoot += 0.21f;
             }
             else
             {
                 RemoveShot();
+                lastShoot += 0.8f;
             }
             haveShot = !haveShot;
         }
@@ -37,8 +41,6 @@ public class CONTENT_PartHook : Part
             if (item.microbeNetId == id)
             {
                 microbe.CmdDestroy(item.gameObject);
-//                Destroy(item.gameObject);
-//                NetworkServer.Destroy(item.gameObject);
             }
         }
     }

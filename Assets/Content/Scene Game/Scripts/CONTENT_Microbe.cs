@@ -5,6 +5,23 @@ using UnityEngine.Networking;
 
 public class CONTENT_Microbe : NetworkBehaviour 
 {
+    [SyncVar]
+    public float health = 100;
+    [Command]
+    public void CmdAddHealth(float add)
+    {
+        health += add;
+    }
+//    [Command]
+//    public void CmdDestroyPart(int index)
+//    {
+//        RpcDestroyPart(index);
+//    }
+//    [ClientRpc]
+//    public void RpcDestroyPart(int index)
+//    {
+//        bodies[index].gameObject.SetActive(false);
+//    }
     [Command]
     public void CmdHook(NetworkInstanceId netId, Vector2 position, float angle)
     {
@@ -41,6 +58,7 @@ public class CONTENT_Microbe : NetworkBehaviour
     public float repelDistance = 4.73f;
     public float repelForce = -0.3f;
     public Transform cameraFollow;
+    public TextMesh text;
 
     public Vector2 forward
     {
@@ -108,6 +126,7 @@ public class CONTENT_Microbe : NetworkBehaviour
                 item.NetworkUpdate();
             }
         }
+        text.text = health.ToString();
     }
 
 }

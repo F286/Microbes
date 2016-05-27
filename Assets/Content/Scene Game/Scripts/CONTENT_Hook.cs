@@ -12,6 +12,7 @@ public class CONTENT_Hook : NetworkBehaviour
     public Rigidbody2D attach;
     public ParticleSystem particles;
     public float rotateForce = 1;
+    public CONTENT_Microbe microbe;
 
     ParticleSystem.Particle[] p = new ParticleSystem.Particle[100];
 
@@ -44,6 +45,12 @@ public class CONTENT_Hook : NetworkBehaviour
         {
             var part = find.gameObject.GetComponentInChildren<CONTENT_PartHook>();
             attach = part.GetComponent<Rigidbody2D>();
+
+            foreach (var item in find.GetComponentsInChildren<Collider2D>())
+            {
+                Physics2D.IgnoreCollision(item, GetComponent<Collider2D>());
+            }
+            microbe = find;
         }
     }
 
@@ -53,10 +60,11 @@ public class CONTENT_Hook : NetworkBehaviour
         r.AddTorque(Mathf.DeltaAngle(r.rotation, r.velocity.ToAngle()) * rotateForce * Time.fixedDeltaTime, 
             ForceMode2D.Impulse);
 
-        if (attach)
+        if (attach && r.isKinematic)
         {
             var diff = r.position - attach.position;
-            attach.AddForce(diff * Time.fixedDeltaTime * 120);
+            attach.AddForce(diff * Time.fixedDeltaTime * 185);
+//            attach.AddForce(diff * Time.fixedDeltaTime * 120);
         }
     }
 
@@ -78,11 +86,57 @@ public class CONTENT_Hook : NetworkBehaviour
 
     void OnCollisionEnter2D(Collision2D coll) 
     {
-        if (isServer)
+        if (this.hasAuthority)
         {
-            GetComponent<Rigidbody2D>().isKinematic = true;
+            CmdSetKinematic();
+            if (coll.rigidbody)
+            {
+                var p = coll.rigidbody.GetComponentInParent<CONTENT_Microbe>();
+                if (p)
+                {
+                    Rigidbody2D hit = null;
+                    int index = 0;
+                    for (int i = 0; i < p.bodies.Length; i++)
+                    {
+                        var item = p.bodies[i];
+                        if (item == coll.rigidbody)
+                        {
+                            hit = item;
+                            index = i;
+                        }
+                    }
+                    if (hit)
+                    {
+                        microbe.CmdAddHealth(-10);
+                        CmdDestroy();
+
+//                        microbe.health -= 10;
+//                        Destroy(hit);
+//                        hit.gameObject.SetActive(false);
+//                        p.CmdDestroyPart(index);
+//                        Destroy(gameObject);
+                    }
+                }
+            }
         }
 
+    }
+    [Command]
+    public void CmdDestroy()
+    {
+        Destroy(gameObject);
+    }
+
+    [Command]
+    public void CmdSetKinematic()
+    {
+        RpcSetKinematic();
+    }
+
+    [ClientRpc]
+    public void RpcSetKinematic()
+    {
+        GetComponent<Rigidbody2D>().isKinematic = true;
     }
 }
 
